@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Competition Portal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+    }
+    .page {
+      display: none;
+      min-height: 100vh;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+      text-align: center;
+    }
+    .active {
+      display: flex;
+    }
+    .box {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 100%;
+    }
+    img.logo, img.qr {
+      width: 160px;
+      border-radius: 10px;
+      margin: 15px auto;
+      display: block;
+      border: 2px solid #444;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      border: none;
+    }
+    input {
+      text-align: center;
+      background: #333;
+      color: #fff;
+    }
+    button {
+      background: #27ae60;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button[disabled] {
+      background: #555;
+      cursor: not-allowed;
+    }
+    a.button {
+      display: block;
+      background: #2980b9;
+      color: #fff;
+      padding: 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+    #msg {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Page 1 (Intro) -->
+<div class="page active" id="page1">
+  <div class="box">
+    <h2>🎬 COLLABZZE</h2>
+    <p>Welcome to the Videography Competition,<br>Tap the logo to join</p>
+    <button onclick="showPage(2)" style="border: none; background: none;">
+      <img src="logo.jpg" class="logo" alt="Start"/>
+    </button>
+  </div>
+</div>
+
+<!-- Page 2 (Form First) -->
+<div class="page" id="page2">
+  <div class="box">
+    <h2>📝 Registration</h2>
+    <form id="regForm">
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="tel" name="phone" placeholder="Phone Number" pattern="[0-9]{10}" required />
+      <input type="url" name="instagram" placeholder="https://instagram.com/your_profile" required />
+      <button type="button" onclick="showPage(3)">Next</button>
+    </form>
+  </div>
+</div>
+
+<!-- Page 3 (Payment) -->
+<div class="page" id="page3">
+  <div class="box">
+    <h2>💳 Pay ₹19 to Complete</h2>
+    <p>UPI ID: <strong>6000925751-2@ybl</strong></p>
+    <img src="your-qr.jpg" class="qr" alt="QR Code">
+    <a class="button" href="upi://pay?pa=6000925751-2@ybl&pn=Competition&am=19&cu=INR">📲 Pay via UPI</a>
+    <button onclick="submitForm()">✅ I Have Paid</button>
+    <div id="msg"></div>
+  </div>
+</div>
+
+<script>
+  function showPage(n) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+  }
+
+  async function submitForm() {
+    const form = document.getElementById("regForm");
+    const data = new URLSearchParams(new FormData(form));
+    const msg = document.getElementById("msg");
+
+    msg.textContent = "Submitting...";
+
+    const res = await fetch("https://script.google.com/macros/s/AKfycbyeA1d6T1W9olXQ9q1sUXjQfY3P14kXtPJWvuHMHKlu-nnghWpVJUyZuG8S34yqyj9V/exec", {
+      method: "POST",
+      body: data
+    });
+
+    if (res.ok) {
+      msg.textContent = "✅ Registered successfully!";
+      msg.style.color = "lightgreen";
+      form.reset();
+    } else {
+      msg.textContent = "❌ Submission failed.";
+      msg.style.color = "red";
+    }
+  }
+</script>
+</body>
+</html>
